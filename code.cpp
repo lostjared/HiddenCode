@@ -109,7 +109,7 @@ public:
 			char cx = matched[matched.size()-1];
 			char o = 0;
 			for(long i = matched.size()-1; i  >= 0; --i) {
-				if(matched[i] != cx) {
+				if(std::tolower(matched[i]) != std::tolower(cx)) {
 					o = matched[i];
 					break;
 				}
