@@ -206,6 +206,7 @@ int main(int argc, char  **argv) {
 			if(in > epoch)
 				break;
 		}
+
 	}
 
 	std::cout << "Ran for: " << in << " iterations, found: " << found << std::endl;
