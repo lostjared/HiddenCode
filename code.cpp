@@ -7,6 +7,7 @@
 #include<fstream>
 #include<random>
 #include<sstream>
+#include<array>
 
 class Check {
 public:
