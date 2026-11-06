@@ -115,7 +115,7 @@ public:
 				}
 			}
 			std::size_t p = occour(matched, o);
-			if(last < p) {
+			if(last < p || p <= 1) {
 				return false;
 			}
 
