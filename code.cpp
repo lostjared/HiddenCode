@@ -203,7 +203,7 @@ int main(int argc, char  **argv) {
 		}
 		if(epoch > 0) {
 			++in;
-			if(in > spoech_timeout)
+			if(in > epoch_timeout)
 				break;
 		}
 	}
