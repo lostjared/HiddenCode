@@ -203,8 +203,11 @@ int main(int argc, char  **argv) {
 		}
 		if(epoch > 0) {
 			++in;
+			if(in > spoech_timeout)
+				break;
 		}
 	}
+
 	std::cout << "Ran for: " << in << " iterations, found: " << found << std::endl;
 	return EXIT_SUCCESS;
 }
