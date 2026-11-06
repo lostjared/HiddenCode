@@ -189,7 +189,7 @@ int main(int argc, char  **argv) {
 	std::ostringstream stream;
 	stream << file.rdbuf();
 	std::string value = stream.str();
-	std::size_t epoch = 0;
+	std::size_t epoch = epoch_timeout;
 	std::size_t found = 0;
 	std::size_t in = 0;
 
@@ -203,7 +203,7 @@ int main(int argc, char  **argv) {
 		}
 		if(epoch > 0) {
 			++in;
-			if(in > epoch_timeout)
+			if(in > epoch)
 				break;
 		}
 	}
