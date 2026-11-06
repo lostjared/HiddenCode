@@ -85,7 +85,7 @@ public:
           if (used)
             continue;
         }
-
+	
         char previous = letters[group];
 
         if (new_group)
@@ -116,7 +116,7 @@ public:
           }
         }
         std::size_t p = occour(matched, o);
-        if (last < p || p <= 1) {
+        if (last < p || p < 2) {
           return false;
         }
       }
