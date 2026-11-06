@@ -8,6 +8,9 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#ifdef __linux__
+#include <signal.h>
+#endif
 
 class Check {
   public:
@@ -165,6 +168,14 @@ class Check {
     std::vector<std::size_t> table;
 };
 
+#ifdef __linux__
+
+sig_atomic_t quit = 0;
+
+void signal(int) { quit = 1; }
+
+#endif
+
 int main(int argc, char **argv) {
     if (argc != 4) {
         std::cerr << "Error incorrect arguments..\n";
@@ -190,6 +201,9 @@ int main(int argc, char **argv) {
     std::size_t found = 0;
     std::size_t in = 0;
 
+#ifdef __linux__
+    signal(SIGINT, signal);
+#endif
     while (1) {
         std::string shuf = value;
         std::shuffle(shuf.begin(), shuf.end(), eng);
@@ -203,8 +217,13 @@ int main(int argc, char **argv) {
             if (in > epoch)
                 break;
         }
+#ifdef __linux__
+        if (quit == 1) {
+            std::cout << "\n";
+            break;
+        }
+#endif
     }
-
     std::cout << "Ran for: " << in << " iterations, found: " << found << std::endl;
     return EXIT_SUCCESS;
 }
