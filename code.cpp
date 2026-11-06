@@ -56,7 +56,7 @@ public:
 
     auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
       if (pos > 1 && pos == total) {
-        return true;
+        return groups[pos] != groups[pos -1];
       }
 
       int group = groups[pos];
