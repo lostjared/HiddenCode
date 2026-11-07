@@ -52,10 +52,12 @@ public:
     std::string text_input = std::string(text);
     if (text.empty())
       return false;
-    std::size_t total = countOccour(text_input);
+    std::size_t target_len = countOccour(text_input);
+    if(target_len > text.length()) 
+	    target_len = text.length();
 
     auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
-      if (pos > 1 && pos == total) {
+      if (pos > 1 && pos == target_len) {
         return groups[pos] != groups[pos -1];
       }
 
@@ -127,14 +129,17 @@ public:
         int key = std::isupper(ch) ? 1 : 0;
         std::cout << key << ":" << table[i] << ":" << matched[i] << '\n';
       }
-   }
+   
+    total_matches++;
     auto found_ = patterns_found.find(matched);
-    if(found && found_ == patterns_found.end()) {
-	    patterns_found[matched] = 0;
+    if(found_ == patterns_found.end()) {
+	    patterns_found[matched] = 1;
 	    return true;
     } else if(found && found_ != patterns_found.end()) {
 	    patterns_found[matched]++;
 	    std::cout << "\nMatched: again " << matched << ":" << patterns_found[matched] << std::endl;
+	    return false;
+    }
     }
     return false;
   }
@@ -172,13 +177,14 @@ public:
   }
 
   size_t total() const {
-	  return patterns_found.size();
+	  return total_matches;
   }
 
 protected:
   std::vector<std::size_t> groups;
   std::vector<std::size_t> table;
   std::unordered_map<std::string, std::size_t> patterns_found;
+  std::size_t total_matches = 0;
 };
 
 #ifdef __linux__
