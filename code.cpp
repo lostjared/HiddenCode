@@ -56,6 +56,8 @@ public:
     if (target_len > text.length())
       target_len = text.length();
 
+    matched.reserve(target_len);
+
     auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
       if (pos > 1 && pos == target_len) {
         return groups[pos] != groups[pos - 1];
