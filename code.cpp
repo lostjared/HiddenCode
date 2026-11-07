@@ -127,8 +127,16 @@ public:
         int key = std::isupper(ch) ? 1 : 0;
         std::cout << key << ":" << table[i] << ":" << matched[i] << '\n';
       }
+   }
+    auto found_ = patterns_found.find(matched);
+    if(found && found_ == patterns_found.end()) {
+	    patterns_found[matched] = 0;
+	    return true;
+    } else if(found && found_ != patterns_found.end()) {
+	    patterns_found[matched]++;
+	    std::cout << "\nMatched: again " << matched << ":" << patterns_found[matched] << std::endl;
     }
-    return found;
+    return false;
   }
 
   void fill_groups() {
@@ -163,9 +171,14 @@ public:
     }
   }
 
+  size_t total() const {
+	  return patterns_found.size();
+  }
+
 protected:
   std::vector<std::size_t> groups;
   std::vector<std::size_t> table;
+  std::unordered_map<std::string, std::size_t> patterns_found;
 };
 
 #ifdef __linux__
@@ -175,6 +188,15 @@ sig_atomic_t quit = 0;
 void signal(int) { quit = 1; }
 
 #endif
+
+std::string trim(const std::string &text) {
+	std::string t;
+	for(const auto &i : text) {
+		if(i != '\n')
+			t += i;
+	}
+	return t;
+}
 
 int main(int argc, char **argv) {
   if (argc != 4) {
@@ -198,10 +220,9 @@ int main(int argc, char **argv) {
   stream << file.rdbuf();
   std::string value = stream.str();
   std::size_t epoch = epoch_timeout;
-  std::size_t found = 0;
   std::size_t in = 0;
   std::uniform_int_distribution<int> dist(0, value.length() - buffer_size - 1);
-
+  
 #ifdef __linux__
   signal(SIGINT, signal);
 #endif
@@ -210,9 +231,9 @@ int main(int argc, char **argv) {
     std::shuffle(shuf.begin(), shuf.end(), eng);
     int pos = dist(eng);
     std::string buffer = shuf.substr(pos, buffer_size);
+    std::string pattern;
     if (chk.testPattern(buffer)) {
-      std::cout << "True.\n";
-      ++found;
+      std::cout << "True.\n"; 
     }
     if (epoch > 0) {
       ++in;
@@ -226,7 +247,6 @@ int main(int argc, char **argv) {
     }
 #endif
   }
-  std::cout << "Ran for: " << in << " iterations, found: " << found
-            << std::endl;
-  return EXIT_SUCCESS;
+  std::cout << "Ran for: " << in << " iterations, found: " << chk.total() << std::endl;
+   return EXIT_SUCCESS;
 }
