@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <algorithm>
 #ifdef __linux__
 #include <signal.h>
 #endif
@@ -15,10 +16,14 @@
 class Check {
 public:
   size_t occour(const std::string &text, char c) {
+	unsigned char uc = static_cast<unsigned char>(c);
+	if(!std::isalpha(uc))
+		return 0;
     std::size_t pos = 0;
     for (std::size_t i = 0; i < text.length(); ++i) {
-      if (tolower(text[i]) == tolower(c))
-        pos++;
+	    unsigned char ch = static_cast<unsigned char>(text[i]);
+	    if (std::isalpha(ch) && tolower(ch) == tolower(uc))
+        	pos++;
     }
     return pos;
   }
@@ -33,10 +38,13 @@ public:
     std::size_t count = 0;
     std::set<std::size_t> s;
     for (std::size_t spot = 0; spot < text.length(); ++spot) {
-      char c = text[spot];
+      unsigned char c = static_cast<unsigned char>(text[spot]);
+      if(!std::isalpha(c))
+	      continue;
       for (std::size_t place = 0; place < spot + 1; ++place) {
         count = occour(text, c);
-        s.insert(count);
+	if(count > 0)
+	        s.insert(count);
       }
     }
     for (auto &i : s) {
@@ -50,17 +58,37 @@ public:
     std::array<char, 256> letters{};
     std::string matched;
     std::string text_input = std::string(text);
-    if (text.empty())
+    if (text.empty() || groups.empty() || table.empty())
       return false;
+    std::size_t m_t = std::min(groups.size() -1, table.size());
     std::size_t target_len = countOccour(text_input);
+    target_len = std::min({target_len, text.length(), m_t});
+    if(target_len < 6)
+	    return false;
     if (target_len > text.length())
       target_len = text.length();
 
     matched.reserve(target_len);
 
     auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
-      if (pos > 1 && pos == target_len) {
-        return groups[pos] != groups[pos - 1];
+      if (pos == target_len) {
+
+        if(groups[pos] == groups[pos - 1])
+		return false;
+	std::size_t last = occour(matched, matched.back());
+	unsigned char cx = static_cast<unsigned char>(matched.back());
+	char o = 0;
+	for(long i = static_cast<long>(matched.size()) - 1; i >= 0; --i) {
+		unsigned char ci = static_cast<unsigned char>(matched[i]);
+		if(std::tolower(ci) != std::tolower(cx)) {
+			o = matched[i];
+			break;
+		}
+	}
+	if(o == 0)
+		return false;
+	std::size_t p = occour(matched, o);
+	return (last == p + 1 && p >= 2);
       }
 
       int group = groups[pos];
@@ -108,22 +136,6 @@ public:
     };
     bool found = search(search, 0, 0);
     if (found) {
-      if (matched.length() > 0) {
-        std::size_t last = occour(matched, matched[matched.size() - 1]);
-        std::string val;
-        char cx = matched[matched.size() - 1];
-        char o = 0;
-        for (long i = matched.size() - 1; i >= 0; --i) {
-          if (std::tolower(matched[i]) != std::tolower(cx)) {
-            o = matched[i];
-            break;
-          }
-        }
-        std::size_t p = occour(matched, o);
-        if (last != p + 1 || p < 2) {
-          return false;
-        }
-      }
       std::cout << "Pattern Found: " << matched << '\n';
       std::cout << "Actual:Expected:Character\n";
       for (size_t i = 0; i < matched.length(); ++i) {
@@ -148,6 +160,8 @@ public:
   }
 
   void fill_groups() {
+    groups.clear();
+    table.clear();
     char index = 'A';
     std::size_t i = 0;
     while (1) {
@@ -190,9 +204,9 @@ protected:
 
 #ifdef __linux__
 
-sig_atomic_t quit = 0;
+volatile sig_atomic_t quit = 0;
 
-void signal(int) { quit = 1; }
+void handle_signal(int) { quit = 1; }
 
 #endif
 
@@ -213,6 +227,10 @@ int main(int argc, char **argv) {
 
   int epoch_timeout = std::stoi(argv[2]);
   int buffer_size = std::stoi(argv[3]);
+  if(epoch_timeout < 0 || buffer_size < 6) {
+	  std::cerr << "Error invalid input or buffer size.\n";
+          return EXIT_FAILURE;
+  }
   Check chk;
   chk.fill();
   std::fstream file;
@@ -226,12 +244,16 @@ int main(int argc, char **argv) {
   std::ostringstream stream;
   stream << file.rdbuf();
   std::string value = stream.str();
-  std::size_t epoch = epoch_timeout;
+  if(value.length() <= static_cast<std::size_t>(buffer_size)) {
+	  std::cerr << "Error file smaller than buffer_size.\n";
+	  return EXIT_FAILURE;
+  }
+  std::size_t epoch = static_cast<std::size_t>(epoch_timeout);
   std::size_t in = 0;
-  std::uniform_int_distribution<int> dist(0, value.length() - buffer_size - 1);
+  std::uniform_int_distribution<int> dist(0, value.length() - static_cast<std::size_t>(buffer_size)- 1);
 
 #ifdef __linux__
-  signal(SIGINT, signal);
+  signal(SIGINT, handle_signal);
 #endif
   while (1) {
     std::string shuf = value;
