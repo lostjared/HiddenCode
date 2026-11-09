@@ -1,4 +1,4 @@
-CXXFLAGS = -std=c++23 
+CXXFLAGS = -std=c++23 -O3
 LDFLAGS = 
 CPP_FILES := $(wildcard *.cpp)
 OBJ_FILES := $(CPP_FILES:.cpp=.o)
