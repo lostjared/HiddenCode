@@ -1,5 +1,9 @@
 # GoOdDd pattern matcher 
 
+# Purpose
+
+A high-performance C++ utility designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
+
 Example Run:
 
 <img width="1355" height="718" alt="image" src="https://github.com/user-attachments/assets/4fa1a6dd-51f9-4904-b528-ce891e4d8953" />
