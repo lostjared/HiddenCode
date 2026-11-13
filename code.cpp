@@ -221,7 +221,7 @@ std::string trim(const std::string &text) {
 
 int main(int argc, char **argv) {
   if (argc != 4) {
-    std::cerr << "Error incorrect arguments..\n";
+    std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " textfile attempts chunk_size.\n";
     return EXIT_FAILURE;
   }
 
