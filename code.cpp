@@ -193,6 +193,7 @@ class Check {
     }
 
     size_t total() const { return total_matches; }
+    size_t words() const { return patterns_found.size(); }
 
   protected:
     std::vector<std::size_t> groups;
@@ -254,6 +255,7 @@ int main(int argc, char **argv) {
 #ifdef __linux__
     signal(SIGINT, handle_signal);
 #endif
+
     while (1) {
         std::string shuf = value;
         std::shuffle(shuf.begin(), shuf.end(), eng);
@@ -275,6 +277,6 @@ int main(int argc, char **argv) {
         }
 #endif
     }
-    std::cout << "Ran for: " << in << " iterations, found: " << chk.total() << std::endl;
+    std::cout << "Ran for: " << in << " iterations, found: " << chk.total() << " unique: " << chk.words() << std::endl;
     return EXIT_SUCCESS;
 }
