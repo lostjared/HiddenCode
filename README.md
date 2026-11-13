@@ -2,7 +2,7 @@
 
 # Purpose
 
-A high-performance C++ utility designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
+A C++ tool designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
 
 Example Run:
 
