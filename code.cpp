@@ -20,11 +20,8 @@ class Check {
         if (!std::isalpha(uc))
             return 0;
         std::size_t pos = 0;
-        for (std::size_t i = 0; i < text.length(); ++i) {
-            unsigned char ch = static_cast<unsigned char>(text[i]);
-            if (std::isalpha(ch) && tolower(ch) == tolower(uc))
-                pos++;
-        }
+        unsigned char t = std::tolower(uc);
+        return std::count_if(text.begin(), text.end(), [t](char ch) { return std::isalpha(static_cast<unsigned char>(ch)) && std::tolower(static_cast<unsigned char>(ch)) == t; });
         return pos;
     }
 
@@ -32,7 +29,7 @@ class Check {
 
     void fill() { fill_groups(); }
 
-    std::size_t countOccour(const std::string &text) {
+    std::size_t countOccour(std::string_view text) {
         std::size_t index = 0;
         std::size_t total = 0;
         std::size_t count = 0;
@@ -61,11 +58,10 @@ class Check {
 
         std::array<char, 256> letters{};
         std::string matched;
-        std::string text_input = std::string(text);
         if (text.empty() || groups.empty() || table.empty())
             return false;
         std::size_t m_t = std::min(groups.size() - 1, table.size());
-        std::size_t target_len = countOccour(text_input);
+        std::size_t target_len = countOccour(text);
         target_len = std::min({target_len, text.length(), m_t});
         if (target_len < 6)
             return false;
