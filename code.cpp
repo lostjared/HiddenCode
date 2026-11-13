@@ -264,8 +264,8 @@ int main(int argc, char **argv) {
             std::cout << "True.\n";
         }
         if (epoch > 0) {
-            ++in;
-            if (in > epoch)
+            ++in;	    
+            if (in >= epoch)
                 break;
         }
 #ifdef __linux__
