@@ -5,9 +5,8 @@
 A C++ tool designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
 
 Example Run:
-
-<img width="1355" height="718" alt="image" src="https://github.com/user-attachments/assets/4fa1a6dd-51f9-4904-b528-ce891e4d8953" />
-<img width="1354" height="718" alt="image" src="https://github.com/user-attachments/assets/338bcc33-6108-4293-9ad0-f2de02593980" />
+<img width="1154" height="1484" alt="image" src="https://github.com/user-attachments/assets/98b8466c-09ad-4a1b-bc34-e7b32cd9247f" />
+<img width="1154" height="1484" alt="image" src="https://github.com/user-attachments/assets/d0063fcd-ac12-4e45-a914-9565cd4fc8f0" />
 
 Patterns within everything in sequences.
 # Concept 
