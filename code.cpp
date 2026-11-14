@@ -12,7 +12,7 @@
 #ifdef __linux__
 #include <signal.h>
 #endif
-#include"argz.hpp"
+#include "argz.hpp"
 
 class Check {
   public:
@@ -216,39 +216,34 @@ std::string trim(const std::string &text) {
 int main(int argc, char **argv) {
 
     Argz<std::string> parser(argc, argv);
-    parser.addOptionDoubleValue(256, "input", "file")
-	  .addOptionDoubleValue(257, "keyword", "keyword")
-	  .addOptionDoubleValue(258, "iter", "iterations")
-	  .addOptionDoubleValue(259, "chunk", "chunk size");
-
+    parser.addOptionDoubleValue(256, "input", "file").addOptionDoubleValue(257, "keyword", "keyword").addOptionDoubleValue(258, "iter", "iterations").addOptionDoubleValue(259, "chunk", "chunk size");
 
     Argument<std::string> arg;
     std::string input_file, keyword_var;
     std::string iter, chunk;
     int arg_value = 0;
     try {
-	    while((arg_value = parser.proc(arg)) != -1) {
-		    switch(arg_value) {
-			    case 256:
-				    input_file = arg.arg_value;
-				    break;
-		            case 257:
-				    keyword_var = arg.arg_value;
-				    break;
-			    case 258:
-				    iter = arg.arg_value;
-				    break;
-			    case 259:
-				    chunk = arg.arg_value;
-				    break;
-		    }
-	    }
+        while ((arg_value = parser.proc(arg)) != -1) {
+            switch (arg_value) {
+            case 256:
+                input_file = arg.arg_value;
+                break;
+            case 257:
+                keyword_var = arg.arg_value;
+                break;
+            case 258:
+                iter = arg.arg_value;
+                break;
+            case 259:
+                chunk = arg.arg_value;
+                break;
+            }
+        }
 
-    } catch(const ArgException<std::string>  &e) {
-	    std::cerr << e.text() << std::endl;
-	    return EXIT_FAILURE;
+    } catch (const ArgException<std::string> &e) {
+        std::cerr << e.text() << std::endl;
+        return EXIT_FAILURE;
     }
-
 
     if (!keyword_var.empty()) {
         Check chk;
