@@ -12,6 +12,7 @@
 #ifdef __linux__
 #include <signal.h>
 #endif
+#include"argz.hpp"
 
 class Check {
   public:
@@ -214,22 +215,57 @@ std::string trim(const std::string &text) {
 
 int main(int argc, char **argv) {
 
-    if (argc == 2) {
+    Argz<std::string> parser(argc, argv);
+    parser.addOptionDoubleValue(256, "input", "file")
+	  .addOptionDoubleValue(257, "keyword", "keyword")
+	  .addOptionDoubleValue(258, "iter", "iterations")
+	  .addOptionDoubleValue(259, "chunk", "chunk size");
+
+
+    Argument<std::string> arg;
+    std::string input_file, keyword_var;
+    std::string iter, chunk;
+    int arg_value = 0;
+    try {
+	    while((arg_value = parser.proc(arg)) != -1) {
+		    switch(arg_value) {
+			    case 256:
+				    input_file = arg.arg_value;
+				    break;
+		            case 257:
+				    keyword_var = arg.arg_value;
+				    break;
+			    case 258:
+				    iter = arg.arg_value;
+				    break;
+			    case 259:
+				    chunk = arg.arg_value;
+				    break;
+		    }
+	    }
+
+    } catch(const ArgException<std::string>  &e) {
+	    std::cerr << e.text() << std::endl;
+	    return EXIT_FAILURE;
+    }
+
+
+    if (!keyword_var.empty()) {
         Check chk;
         chk.fill();
-        if (chk.testPattern(argv[1])) {
+        if (chk.testPattern(keyword_var)) {
             std::cout << "True: Contains Pattern.\n";
         } else {
             std::cout << "False: Does not contain Pattern.\n";
         }
         return EXIT_SUCCESS;
-    } else if (argc != 4) {
-        std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " textfile attempts chunk_size.\n";
+    } else if (input_file.empty() || (!input_file.empty() && (chunk.empty() || iter.empty()))) {
+        std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --input textfile --iter attempts --chunk chunk_size.\n";
         return EXIT_FAILURE;
     }
 
-    int epoch_timeout = std::stoi(argv[2]);
-    int buffer_size = std::stoi(argv[3]);
+    int epoch_timeout = std::stoi(iter);
+    int buffer_size = std::stoi(chunk);
     if (epoch_timeout < 0 || buffer_size < 6) {
         std::cerr << "Error invalid input or buffer size.\n";
         return EXIT_FAILURE;
@@ -237,7 +273,7 @@ int main(int argc, char **argv) {
     Check chk;
     chk.fill();
     std::fstream file;
-    file.open(argv[1], std::ios::in);
+    file.open(input_file, std::ios::in);
     if (!file.is_open()) {
         std::cerr << "Error.\n";
         return EXIT_FAILURE;
