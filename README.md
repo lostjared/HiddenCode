@@ -1,5 +1,7 @@
 # Pattern Matcher 
 
+<img width="1355" height="1050" alt="image" src="https://github.com/user-attachments/assets/3e73701b-ad6f-4aa2-88bc-747327f29911" />
+
 # Purpose
 
 A C++ tool designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
