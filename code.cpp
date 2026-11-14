@@ -30,129 +30,123 @@ class Check {
     void fill() { fill_groups(); }
 
     std::size_t countOccour(std::string_view text) {
-        std::size_t index = 0;
         std::size_t total = 0;
-        std::size_t count = 0;
-        std::set<std::size_t> s;
-        std::array<std::size_t, 256> counts{0};
-
         for (std::size_t spot = 0; spot < text.length(); ++spot) {
-            unsigned char c = static_cast<unsigned char>(text[spot]);
-            if (std::isalpha(c)) {
-                counts[c]++;
+            unsigned char ch = static_cast<unsigned char>(text[spot]);
+            if (std::isalpha(ch)) {
+                total++;
             }
-        }
-
-        for (std::size_t i = 0; i < 256; ++i) {
-            if (counts[i] > 0) {
-                s.insert(counts[i]);
-            }
-        }
-        for (const auto &i : s) {
-            total += i;
         }
         return total;
     }
 
     bool testPattern(std::string_view text) {
-
-        std::array<char, 256> letters{};
-        std::string matched;
         if (text.empty() || groups.empty() || table.empty())
             return false;
+
         std::size_t m_t = std::min(groups.size() - 1, table.size());
-        std::size_t target_len = countOccour(text);
-        target_len = std::min({target_len, text.length(), m_t});
-        if (target_len < 6)
-            return false;
-        if (target_len > text.length())
-            target_len = text.length();
+        std::size_t max_len = countOccour(text);
+        max_len = std::min({max_len, text.length(), m_t});
 
-        matched.reserve(target_len);
-
-        auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
-            if (pos == target_len) {
-
-                if (groups[pos] == groups[pos - 1])
-                    return false;
-                std::size_t last = occour(matched, matched.back());
-                unsigned char cx = static_cast<unsigned char>(matched.back());
-                char o = 0;
-                for (long i = static_cast<long>(matched.size()) - 1; i >= 0; --i) {
-                    unsigned char ci = static_cast<unsigned char>(matched[i]);
-                    if (std::tolower(ci) != std::tolower(cx)) {
-                        o = matched[i];
-                        break;
-                    }
-                }
-                if (o == 0)
-                    return false;
-                std::size_t p = occour(matched, o);
-                return (last == p + 1 && p >= 2);
+        std::vector<std::size_t> valid_lengths;
+        std::size_t t_len = 0;
+        std::size_t step = 1;
+        while (t_len + step <= max_len) {
+            t_len += step;
+            if (t_len >= 6) {
+                valid_lengths.push_back(t_len);
             }
+            step++;
+        }
 
-            int group = groups[pos];
-            bool new_group = (pos == 0 || groups[pos - 1] != group);
+        for (auto it = valid_lengths.rbegin(); it != valid_lengths.rend(); ++it) {
+            std::size_t target_len = *it;
 
-            for (size_t i = start; i < text.length(); ++i) {
-                unsigned char ch = static_cast<unsigned char>(text.at(i));
-                int key = std::isupper(ch) ? 1 : 0;
+            std::array<char, 256> letters{};
+            std::string matched;
+            matched.reserve(target_len);
 
-                if (key != table[pos] || !std::isalpha(ch))
-                    continue;
-
-                char lower = static_cast<char>(std::tolower(ch));
-
-                if (!new_group && letters.at(group) != lower)
-                    continue;
-
-                if (new_group) {
-                    bool used = false;
-
-                    for (int j = 0; j < group; ++j) {
-                        if (letters.at(j) == lower)
-                            used = true;
+            auto search = [&](auto &&self, size_t start, size_t pos) -> bool {
+                if (pos == target_len) {
+                    if (groups[pos] == groups[pos - 1])
+                        return false;
+                    std::size_t last = occour(matched, matched.back());
+                    unsigned char cx = static_cast<unsigned char>(matched.back());
+                    char o = 0;
+                    for (long i = static_cast<long>(matched.size()) - 1; i >= 0; --i) {
+                        unsigned char ci = static_cast<unsigned char>(matched[i]);
+                        if (std::tolower(ci) != std::tolower(cx)) {
+                            o = matched[i];
+                            break;
+                        }
                     }
+                    if (o == 0)
+                        return false;
+                    std::size_t p = occour(matched, o);
+                    return (last == p + 1 && p >= 2);
+                }
 
-                    if (used)
+                int group = groups[pos];
+                bool new_group = (pos == 0 || groups[pos - 1] != group);
+
+                for (size_t i = start; i < text.length(); ++i) {
+                    unsigned char ch = static_cast<unsigned char>(text.at(i));
+                    int key = std::isupper(ch) ? 1 : 0;
+
+                    if (key != table[pos] || !std::isalpha(ch))
                         continue;
+
+                    char lower = static_cast<char>(std::tolower(ch));
+
+                    if (!new_group && letters.at(group) != lower)
+                        continue;
+
+                    if (new_group) {
+                        bool used = false;
+                        for (int j = 0; j < group; ++j) {
+                            if (letters.at(j) == lower)
+                                used = true;
+                        }
+                        if (used)
+                            continue;
+                    }
+
+                    char previous = letters[group];
+
+                    if (new_group)
+                        letters.at(group) = lower;
+
+                    matched += text.at(i);
+
+                    if (self(self, i + 1, pos + 1))
+                        return true;
+
+                    matched.pop_back();
+                    letters.at(group) = previous;
                 }
 
-                char previous = letters[group];
-
-                if (new_group)
-                    letters.at(group) = lower;
-
-                matched += text.at(i);
-
-                if (self(self, i + 1, pos + 1))
-                    return true;
-
-                matched.pop_back();
-                letters.at(group) = previous;
-            }
-
-            return false;
-        };
-        bool found = search(search, 0, 0);
-        if (found) {
-            std::cout << "Pattern Found: " << matched << '\n';
-            std::cout << "Actual:Expected:Character\n";
-            for (size_t i = 0; i < matched.length(); ++i) {
-                unsigned char ch = static_cast<unsigned char>(matched[i]);
-                int key = std::isupper(ch) ? 1 : 0;
-                std::cout << key << ":" << table[i] << ":" << matched[i] << '\n';
-            }
-
-            total_matches++;
-            auto found_ = patterns_found.find(matched);
-            if (found_ == patterns_found.end()) {
-                patterns_found[matched] = 1;
-                return true;
-            } else if (found && found_ != patterns_found.end()) {
-                patterns_found[matched]++;
-                std::cout << "\nMatched: again " << matched << ":" << patterns_found[matched] << std::endl;
                 return false;
+            };
+
+            if (search(search, 0, 0)) {
+                std::cout << "Pattern Found: " << matched << '\n';
+                std::cout << "Actual:Expected:Character\n";
+                for (size_t i = 0; i < matched.length(); ++i) {
+                    unsigned char ch = static_cast<unsigned char>(matched[i]);
+                    int key = std::isupper(ch) ? 1 : 0;
+                    std::cout << key << ":" << table[i] << ":" << matched[i] << '\n';
+                }
+
+                total_matches++;
+                auto found_ = patterns_found.find(matched);
+                if (found_ == patterns_found.end()) {
+                    patterns_found[matched] = 1;
+                    return true;
+                } else {
+                    patterns_found[matched]++;
+                    std::cout << "\nMatched: again " << matched << ":" << patterns_found[matched] << std::endl;
+                    return false;
+                }
             }
         }
         return false;
@@ -220,7 +214,17 @@ std::string trim(const std::string &text) {
 }
 
 int main(int argc, char **argv) {
-    if (argc != 4) {
+
+    if (argc == 2) {
+        Check chk;
+        chk.fill();
+        if (chk.testPattern(argv[1])) {
+            std::cout << "True: Contains Pattern.\n";
+        } else {
+            std::cout << "False: Does not contain Pattern.\n";
+        }
+        return EXIT_SUCCESS;
+    } else if (argc != 4) {
         std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " textfile attempts chunk_size.\n";
         return EXIT_FAILURE;
     }
