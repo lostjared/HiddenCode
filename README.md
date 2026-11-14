@@ -34,6 +34,8 @@ The program accepts the following arguments. Arguments that require a value shou
                         the input string (either the keyword or the file contents) 
                         before running the pattern check.
 
+  --random              Use a random buffer for pattern matching. Requires iter and chunk.
+
 # Usage Modes
 
 1. Keyword Mode
