@@ -96,7 +96,7 @@ Examples of matched sequences include:
 
 GwWtTt
 
-VwwXxx
+VwWxXx
 
 MxXqQq
 
