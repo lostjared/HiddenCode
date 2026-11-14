@@ -1,12 +1,12 @@
 # Pattern Matcher 
 
+Example Run:
 <img width="1355" height="1050" alt="image" src="https://github.com/user-attachments/assets/3e73701b-ad6f-4aa2-88bc-747327f29911" />
 
 # Purpose
 
 A C++ tool designed to read an input file, shuffle text buffers randomly, and execute recursive backtracking searches to find complex structural patterns based on alternating case rules and triangular character frequency constraints.
 
-Example Run:
 
 # Pattern Checker Utility
 
@@ -86,6 +86,10 @@ The test was executed using the custom C++ pattern-matching utility with the fol
 By generating random character strings and applying the exact same backtracking search algorithms and frequency verifications used on standard text, we can measure if the target structures naturally emerge from the noise.
 
 # Results
+
+<img width="730" height="1000" alt="image" src="https://github.com/user-attachments/assets/32b86b3e-063b-4f3a-b547-6f8a6fa858b6" />
+
+
 As documented in the console output (refer to image_2d717a.jpg), the algorithm successfully identified multiple valid pattern matches within the randomized data.
 
 Examples of matched sequences include:
