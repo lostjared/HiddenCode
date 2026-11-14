@@ -61,6 +61,4 @@ Example:
 - If running on a Linux environment, you can interrupt a long-running file 
   processing task using Ctrl+C (SIGINT), and the program will gracefully exit 
   and print its current findings.
-- The chunk size (  will throw an error.--chunk) must be greater than or equal to 6, or the program 
-
-
+- The chunk size (  will throw an error.--chunk) must be greater than or equal to 6, or the program will return an error.
