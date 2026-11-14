@@ -224,12 +224,13 @@ std::string reverseString(std::string_view rev) {
 int main(int argc, char **argv) {
 
     Argz<std::string> parser(argc, argv);
-    parser.addOptionDoubleValue(256, "input", "file").addOptionDoubleValue(257, "keyword", "keyword").addOptionDoubleValue(258, "iter", "iterations").addOptionDoubleValue(259, "chunk", "chunk size").addOptionDouble(260, "rev", "reverse");
+    parser.addOptionDoubleValue(256, "input", "file").addOptionDoubleValue(257, "keyword", "keyword").addOptionDoubleValue(258, "iter", "iterations").addOptionDoubleValue(259, "chunk", "chunk size").addOptionDouble(260, "rev", "reverse").addOptionDouble(261, "random", "random buffer");
 
     Argument<std::string> arg;
     std::string input_file, keyword_var;
     std::string iter, chunk;
     bool reverse = false;
+    bool random_buffer = false;
     int arg_value = 0;
     try {
         while ((arg_value = parser.proc(arg)) != -1) {
@@ -248,6 +249,9 @@ int main(int argc, char **argv) {
                 break;
             case 260:
                 reverse = true;
+                break;
+            case 261:
+                random_buffer = true;
                 break;
             }
         }
@@ -268,9 +272,12 @@ int main(int argc, char **argv) {
             std::cout << "False: Does not contain Pattern.\n";
         }
         return EXIT_SUCCESS;
-    } else if (input_file.empty() || (!input_file.empty() && (chunk.empty() || iter.empty()))) {
+    } else if (!random_buffer && input_file.empty() || (!input_file.empty() && (chunk.empty() || iter.empty()))) {
         std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --input textfile --iter attempts --chunk chunk_size.\n";
         return EXIT_FAILURE;
+    } else if(random_buffer && (iter.empty() || chunk.empty())) {
+	    std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --random --iter iter --chunk chunk_size\n";
+	    return EXIT_FAILURE;
     }
 
     int epoch_timeout = std::stoi(iter);
@@ -282,19 +289,30 @@ int main(int argc, char **argv) {
     Check chk;
     chk.fill();
     std::fstream file;
-    file.open(input_file, std::ios::in);
-    if (!file.is_open()) {
-        std::cerr << "Error.\n";
-        return EXIT_FAILURE;
-    }
     std::random_device rd;
     std::default_random_engine eng(rd());
-    std::ostringstream stream;
-    stream << file.rdbuf();
-    std::string value = stream.str();
-    if (value.length() <= static_cast<std::size_t>(buffer_size)) {
-        std::cerr << "Error file smaller than buffer_size.\n";
-        return EXIT_FAILURE;
+    std::string value;
+
+    if (random_buffer == false) {
+        file.open(input_file, std::ios::in);
+        if (!file.is_open()) {
+            std::cerr << "Error.\n";
+            return EXIT_FAILURE;
+        }
+        std::ostringstream stream;
+        stream << file.rdbuf();
+        value = stream.str();
+        if (value.length() <= static_cast<std::size_t>(buffer_size)) {
+            std::cerr << "Error file smaller than buffer_size.\n";
+            return EXIT_FAILURE;
+        }
+    } else {
+	    constexpr std::string_view ch_set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	    std::uniform_int_distribution<int> dist(0, ch_set.size()-1);
+	    for(std::size_t i = 0; i < 1000; ++i) {
+		    value += ch_set[dist(eng)];
+	    }
+	    std::cout << "Using random string: " << value << "\n";
     }
     std::size_t epoch = static_cast<std::size_t>(epoch_timeout);
     std::size_t in = 0;
