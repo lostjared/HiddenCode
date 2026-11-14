@@ -41,16 +41,20 @@ If you just want to test a single word or phrase, use the `--keyword` argument.
 You can optionally combine it with `--rev`.
 
 Example:
-  ./pattern_check --keyword "AbcDefA"
-  ./pattern_check --keyword "AfeDcbA" --rev
+```bash  
+./pattern_check --keyword "AbcDefA"
+./pattern_check --keyword "AfeDcbA" --rev
+```
 
 2. File Processing Mode
 If you want to randomly sample chunks of a larger text file to find patterns, you 
 must provide the input file, the number of iterations, and the chunk size.
 
 Example:
+```bash
   ./pattern_check --input document.txt --iter 10000 --chunk 20
   ./pattern_check --input document.txt --iter 5000 --chunk 15 --rev
+```
 
 # Notes
 
