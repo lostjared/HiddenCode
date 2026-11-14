@@ -64,3 +64,47 @@ Example:
   processing task using Ctrl+C (SIGINT), and the program will gracefully exit 
   and print its current findings.
 - The chunk size (  will throw an error.--chunk) must be greater than or equal to 6, or the program will return an error.
+
+# Experiment:
+
+Hidden Code Pattern Analysis: Random Data Experiment
+
+## Overview
+
+This experiment was designed to test the statistical inevitability of specific structural letter patterns (such as the 1:2:3 sequence ratios and alternating casing rules found in earlier pattern-matching tests) appearing in arbitrary datasets. The primary goal was to determine whether the discovery of these structural acrostics in text implies intentional placement (intelligent design) or if they are simply a natural consequence of probability and combinatorial odds.
+
+## Methodology
+
+To test this, the pattern-searching algorithm was run against completely randomized string data rather than structured human language.
+
+The test was executed using the custom C++ pattern-matching utility with the following parameters to simulate data shuffling over multiple passes:
+
+```bash
+./hidden-code --random --iter 1000 --chunk 20
+```
+
+By generating random character strings and applying the exact same backtracking search algorithms and frequency verifications used on standard text, we can measure if the target structures naturally emerge from the noise.
+
+# Results
+As documented in the console output (refer to image_2d717a.jpg), the algorithm successfully identified multiple valid pattern matches within the randomized data.
+
+Examples of matched sequences include:
+
+GwWtTt
+
+VwwXxx
+
+MxXqQq
+
+YuUsSs
+
+VkKdDd
+
+The utility verified the Actual:Expected:Character counts and casing rules for each, returning True across the board. The patterns formed perfectly despite the input string being a meaningless, randomly generated sequence.
+
+# Conclusion
+
+The results of this experiment demonstrate that the appearance of these specific structural sequences is not indicative of intentional cryptographic placement. Instead, it is a mathematical inevitability.
+
+Given the constraints of the alphabet, the odds of data shuffling, and the law of large numbers, running a rigorous pattern-matching algorithm over enough data will eventually yield recognized sequences by pure chance. The patterns are an artifact of probability and the sheer volume of parsed data rather than a hidden, deliberately constructed code.
+
