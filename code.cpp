@@ -144,7 +144,6 @@ class Check {
                     return true;
                 } else {
                     patterns_found[matched]++;
-                    std::cout << "\nMatched: again " << matched << ":" << patterns_found[matched] << std::endl;
                     return false;
                 }
             }
