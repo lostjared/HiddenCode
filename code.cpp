@@ -213,14 +213,23 @@ std::string trim(const std::string &text) {
     return t;
 }
 
+std::string reverseString(std::string_view rev) {
+    std::string value;
+    for (auto it = rev.rbegin(); it != rev.rend(); ++it) {
+        value += *it;
+    }
+    return value;
+}
+
 int main(int argc, char **argv) {
 
     Argz<std::string> parser(argc, argv);
-    parser.addOptionDoubleValue(256, "input", "file").addOptionDoubleValue(257, "keyword", "keyword").addOptionDoubleValue(258, "iter", "iterations").addOptionDoubleValue(259, "chunk", "chunk size");
+    parser.addOptionDoubleValue(256, "input", "file").addOptionDoubleValue(257, "keyword", "keyword").addOptionDoubleValue(258, "iter", "iterations").addOptionDoubleValue(259, "chunk", "chunk size").addOptionDouble(260, "rev", "reverse");
 
     Argument<std::string> arg;
     std::string input_file, keyword_var;
     std::string iter, chunk;
+    bool reverse = false;
     int arg_value = 0;
     try {
         while ((arg_value = parser.proc(arg)) != -1) {
@@ -237,6 +246,9 @@ int main(int argc, char **argv) {
             case 259:
                 chunk = arg.arg_value;
                 break;
+            case 260:
+                reverse = true;
+                break;
             }
         }
 
@@ -248,6 +260,8 @@ int main(int argc, char **argv) {
     if (!keyword_var.empty()) {
         Check chk;
         chk.fill();
+        if (reverse)
+            keyword_var = reverseString(keyword_var);
         if (chk.testPattern(keyword_var)) {
             std::cout << "True: Contains Pattern.\n";
         } else {
@@ -289,6 +303,8 @@ int main(int argc, char **argv) {
 #ifdef __linux__
     signal(SIGINT, handle_signal);
 #endif
+    if (reverse)
+        value = reverseString(value);
 
     while (1) {
         std::string shuf = value;
