@@ -13,6 +13,7 @@
 #include <signal.h>
 #endif
 #include "argz.hpp"
+#include "gambit.hpp"
 
 class Check {
   public:
