@@ -1,9 +1,9 @@
-CXXFLAGS = -std=c++23 -O3
-LDFLAGS = 
-CPP_FILES := $(wildcard *.cpp)
-OBJ_FILES := $(CPP_FILES:.cpp=.o)
-OUTPUT_NAME =  hidden-code
-DEPS := $(wildcard *.hpp)
+CXXFLAGS= -std=c++23 -O3 -static-libgcc -static-libstdc++
+LDFLAGS= -Wl,-Bstatic -lstdc++ -lpthread -Wl,-Bdynamic
+CPP_FILES:= $(wildcard *.cpp)
+OBJ_FILES:= $(CPP_FILES:.cpp=.o)
+OUTPUT_NAME=  hidden-code
+DEPS:= $(wildcard *.hpp)
 
 %.o: %.cpp $(DEPS) 
 	$(CXX) $(CXXFLAGS) -c $< -o $@

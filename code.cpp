@@ -293,10 +293,10 @@ int main(int argc, char **argv) {
     std::default_random_engine eng(rd());
     std::string value;
 
-    if (random_buffer == false) {
+    if (!random_buffer) {
         file.open(input_file, std::ios::in);
         if (!file.is_open()) {
-            std::cerr << "Error.\n";
+            std::cerr << "Error could not open file: " << input_file << "\n";
             return EXIT_FAILURE;
         }
         std::ostringstream stream;
