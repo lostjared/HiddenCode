@@ -276,9 +276,9 @@ int main(int argc, char **argv) {
     } else if (!random_buffer && input_file.empty() || (!input_file.empty() && (chunk.empty() || iter.empty()))) {
         std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --input textfile --iter attempts --chunk chunk_size.\n";
         return EXIT_FAILURE;
-    } else if(random_buffer && (iter.empty() || chunk.empty())) {
-	    std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --random --iter iter --chunk chunk_size\n";
-	    return EXIT_FAILURE;
+    } else if (random_buffer && (iter.empty() || chunk.empty())) {
+        std::cerr << "Error incorrect arguments..\nUse: " << argv[0] << " --random --iter iter --chunk chunk_size\n";
+        return EXIT_FAILURE;
     }
 
     int epoch_timeout = std::stoi(iter);
@@ -308,12 +308,12 @@ int main(int argc, char **argv) {
             return EXIT_FAILURE;
         }
     } else {
-	    constexpr std::string_view ch_set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-	    std::uniform_int_distribution<int> dist(0, ch_set.size()-1);
-	    for(std::size_t i = 0; i < 1000; ++i) {
-		    value += ch_set[dist(eng)];
-	    }
-	    std::cout << "Using random string: " << value << "\n";
+        constexpr std::string_view ch_set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        std::uniform_int_distribution<int> dist(0, ch_set.size() - 1);
+        for (std::size_t i = 0; i < 1000; ++i) {
+            value += ch_set[dist(eng)];
+        }
+        std::cout << "Using random string: " << value << "\n";
     }
     std::size_t epoch = static_cast<std::size_t>(epoch_timeout);
     std::size_t in = 0;

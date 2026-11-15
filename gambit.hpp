@@ -1,9 +1,4 @@
 #pragma once
-#include<iostream>
+#include <iostream>
 
-namespace mx {
-
-
-
-}
-
+namespace mx {}
